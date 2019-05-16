@@ -1,0 +1,164 @@
+
+# coding: utf-8
+
+# # Travail numérique de PHYS-F-302 
+# ## Safae Ben Ayad & Guillaume Houyoux
+# 
+# ### Introduction & quelques équations
+
+# Pour ce travail, nous nous interessons à un type d'écoulement, soit $\textbf{l'écoulement de Stokes}$. Plus concretement, nous voudrons résoudre $\textbf{l'équation biharmonique}$ dans le but de résoudre numériquement l'écoulement de Stokes dans une cavité carrée.
+# 
+# $\textbf{L'écoulement de Stokes}$ s'agit d'un écoulement dont les effets dû à la force de viscosité du liquide sont très importants par rapport aux effets dûs à d'autres forces comme, par exemple, la force d'inertie. Un écoulement peut être supposé de Stokes dans un certain cadre; ce cadre est delimité par une condition sur le $\textbf{nombre de Reynolds (Re)}$ étant que celui-ci soit inférieur à 1. 
+# 
+# Le nombre de Reynolds, donné ci-dessous, représente le rapport entre les forces d'inertie et les forces visqueuses ce qui implique que un Re plus petit que 1 revient à notre énonciation précédente où nous affirmons que les écoulements de Stokes sont dominés par des forces dûes à la viscosité. 
+# 
+# $${\displaystyle \mathrm {Re} ={\frac {uL}{\nu }}}$$
+# 
+# où $\nu$ est la viscosité, $u$ la vitesse et $L$ une longueur caractéristique.
+# 
+# De plus, ce nombre permet de réecrire l'equation de $\textbf{Navier-Stokes}$ (sous l'hypothèse d'écoulement incompressible) qui suit comme étant une équation non dimensionnelle (1): 
+# 
+#  \begin{eqnarray}
+# \frac{\partial u}{\partial t} + u \cdot \nabla u = -\frac{1}{\rho}\nabla p + \nu\nabla^2 u 
+# \end{eqnarray}
+# 
+# 
+# \begin{eqnarray} 
+#  Re \left(\frac{\partial u^*}{\partial t} + u^* \cdot \nabla u^* \right) = -\nabla p^* + \nabla^2 u^*   \text{ (1)}
+# \end{eqnarray}
+# 
+# où  $u^*$ et $p^*$ sont les coefficients adimensionnels pour la vitesse et la pression respectivement.
+#   
+# Afin de trouver l'écoulement de Stokes, nous supposons que Re tend vers 0 de manière à retrouver l'équation suivante
+# 
+# \begin{equation}
+#  - \nabla p + \nabla^2 u = 0
+# \end{equation}
+# 
+# Et si nous appliquons le rotationnel des deux cotés, il en résulte: 
+# 
+# \begin{equation}
+# 0 = \nabla \times 0 = \nabla \times \left( - \nabla p + \nabla^2 u\right)
+# \end{equation}
+# 
+# Sachant que le rotationnel du gradient d'un scalaire est nul, 
+# \begin{equation}
+# \nabla \times (- \nabla p) = - \nabla \times \nabla p = 0
+# \end{equation}
+# 
+# nous obtenons finalement l'équation suivante: 
+# 
+# \begin{equation}
+#  0 = \nabla \times \nabla^2 u =\nabla^2\omega
+# \end{equation}
+# 
+# en terme du vecteur tourbillon (vorticité) qui est donnée par $\omega = \nabla \times u$.
+# 
+# Donc nous avons tout simplement l'équation de Poisson dans le cas homogène, soit $\textbf{l'équation de Laplace}$: 
+# 
+# \begin{equation}
+#  \nabla ^2 \omega = 0
+# \end{equation}
+# 
+
+# Nous avons donc trouvé l'expression pour le tourbillon qui va ensuite nous servir pour trouver $\textbf{l'équation biharmonique}$. Trouvons à présent la formule pour le courant, nous nous plaçons tout d'abord dans le cas où l'écoulement est bidimensionnel et incompressible. Nous pouvons dire que par definition la fonction du courant sera donné par :
+# 
+# 
+# $$\begin{equation}
+# u = \frac{\partial \psi}{\partial y} \text{   et   } v = - \frac{\partial \psi}{\partial x}
+# \end{equation} $$
+# 
+# Sachant que le tourbillon suit l'axe z, les termes en x et y du rotationnel valent 0 et nous gardons plus que:
+# 
+# \begin{equation}
+# \omega = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}
+# \end{equation}
+# 
+# Nous trouvons donc la relation entre $\psi \text{ et } \omega $ en dérivant $\psi$ une deuxième fois par rapport aux deux coordonnées, nous égalisons avec l'expression d'omega; 
+# 
+# \begin{equation}
+# \nabla^2 \psi = -\omega
+# \end{equation}
+# 
+# Par le calcul précédent sur le tourbillon, nous savons que $\nabla^2 \omega = 0$, donc nous faisons apparaitre le $\nabla^2 \omega$ à droite de la manière suivante:
+# 
+# \begin{equation}
+# \boxed{\nabla^4 \psi= 0}
+# \end{equation}
+# 
+# pour finalement abutir sur l'équation biharmonique souhaitée. Il s'agit de l'équation que nous allons résoudre durant ce travail.
+
+# ### Écoulement dans une cavité - conditions aux bords 
+# 
+# <img src="./drivencavity.png" width=400px>
+
+# Nous voudrons résoudre le problème du courant dans la cavité à couvercle mouvant afin d'examiner l'écoulement de Stokes.
+# 
+# Nous devons supposer pour ce problème que nous avons un couvercle qui se deplace à une vitesse constante $u=1$ et que le fluide ne depasse pas la cavité à travers le bord du couvercle, autrement dit; nous avons imperméabilité des bords, le couvercle étant inclu. Nous supposons également que les parois sont non-glissantes.
+# Les conditions aux bord-ci dessus sont toute données en terme de la fonction de courant $\psi$.
+# 
+# Sachant donc que le fluide ne sort pas de la cavité, les conditions de Dirichlet seront toutes nulles. En ce qui concerne les conditions de Neumann, nous savons que la parois supérieure a une vitesse égale à $u=1$ et en supposant que les parois sont non glissantes, le flot au long du couvercle aura lui aussi une vitesse constante égale à celle du couvercle. En ce qui concerne les autres bords, ils sont immobiles donc le flot parallèle le sera aussi.
+# 
+
+# ### Discretisation de l'équation biharmonique de second ordre
+# 
+# Nous allons tout d'abord developper notre équation biharmonique en 2D dans un système de coordonnées cartesiennes, de manière à l'avoir sous la forme suivante: 
+# 
+# $$\nabla^4 \psi= \frac{\partial^4 \psi}{\partial x^4}+\frac{\partial^4 \psi}{\partial y^4}+2\frac{\partial^4 \psi}{\partial x^2\partial y^2} = 0$$
+# 
+# Ensuite, nous allons discretiser cette équation d'après la section 05_01_2D.Laplace.Equation en traitant chacun des termes individuellement. Commençant par le premier terme:
+
+# $$\begin{align}
+# \frac{\partial^4 \psi}{\partial x^4} & =  \frac{\partial^2}{\partial x^2}\left(\frac{\partial^2 \psi}{\partial x^2}\right) =\frac{\left(\frac{\partial^2 \psi}{\partial x^2}\right)_{i+1,j}^k-2 \left(\frac{\partial^2\psi}{\partial x^2}\right)_{i,j}^k +\left(\frac{\partial^2 \psi}{\partial x^2}\right)_{i-1,j}^k}{\Delta x^2} \\
+# & = \frac{\left(\psi_{i+1,j}^k-2\psi_{i,j}^k+\psi_{i-1,j}^k\right)_{i+1,j}^k -2\left(\psi_{i+1,j}^k-2\psi_{i,j}^k+\psi_{i-1,j}^k\right)_{i,j}^k+\left(\psi_{i+1,j}^k-2\psi_{i,j}^k+\psi_{i-1,j}^k\right)_{i-1,j}^k}{\Delta x^4} \\
+# \end{align}$$
+# 
+# Nous trouvons finalement pour le premier terme la discretization suivante:
+# 
+# $\begin{align} \frac{\partial^4 \psi}{\partial x^4} & = \frac{\psi_{i+2,j}^k - 2\psi_{i+1,j}^k +\psi_{i,j}^k -2 \psi_{i+1,j}^k +4 \psi_{i,j}^k -2\psi_{i-1,j}^k + \psi_{i,j}^k -2 \psi_{i-1,j}^k +\psi_{i-2,j}^k}{\Delta x^4} \\
+# & = \frac{\psi_{i+2,j}^k-4\psi_{i+1,j}^k+6\psi_{i,j}^k-4\psi_{i-1,j}^k+\psi_{i-2,j}^k}{\Delta x^4} \end{align}$
+# 
+# Idem pour la derivée en $y^4$: 
+# 
+# $\begin{align} \frac{\partial^4 \psi}{\partial y^4} & = \frac{\psi_{i,j+2}^k - 2\psi_{i,j+1}^k +\psi_{i,j}^k -2 \psi_{i,j+1}^k +4 \psi_{i,j}^k -2\psi_{i,j-1}^k + \psi_{i,j}^k -2 \psi_{i,j-1}^k +\psi_{i,j-2}^k}{\Delta y^4} \\
+# & = \frac{\psi_{i,j+2}^k-4\psi_{i,j+1}^k+6\psi_{i,j}^k-4\psi_{i,j-1}^k+\psi_{i,j-2}^k}{\Delta y^4} \end{align}$
+# 
+# En ce qui concerne le terme mix $\frac{\partial^4 \psi}{\partial x^2\partial y^2}$, nous discretisons de manière similaire d'abord la discretization par rapport à x ensuite par rapport à y:
+# 
+# 
+# $\begin{align} \frac{\partial^4 \psi}{\partial x^2\partial y^2} & =
+# \frac{\partial^2}{\partial x^2}\left(\frac{\partial^2 \psi}{\partial y^2}\right) \\ 
+# & =  \frac{\left(\frac{\partial^2 \psi}{\partial y^2}\right)_{i+1,j}^k-2 \left(\frac{\partial^2\psi}{\partial y^2}\right)_{i,j}^k + \left(\frac{\partial^2 \psi}{\partial y^2}\right)_{i-1,j}^k}{\Delta x^2}\end{align}$
+# 
+# 
+# $$ = \frac{\left(\psi_{i,j+1}^k-2\psi_{i,j}^k+\psi_{i,j-1}^k\right)_{i+1,j}^k -2\left(\psi_{i,j+1}^k-2\psi_{i,j}^k+\psi_{i,j-1}^k\right)_{i,j}^k+\left(\psi_{i,j+1}^k-2\psi_{i,j}^k+\psi_{i,j-1}^k\right)_{i-1,j}^k}{\Delta x^2\Delta y^2}\\
+#  = \frac{\psi_{i+1,j+1}^k -2\psi_{i+1,j}^k+\psi_{i+1,j-1}^k-2\psi_{i,j+1}^k+4\Psi_{i,j}^k-2\psi_{i,j-1}^k+\psi_{i-1,j+1}^k-2\psi_{i-1,j}^k+\psi_{i-1,j-1}^k}{\Delta x^2\Delta y^2}$$
+# 
+# Si nous prenons $\Delta x^2 = \Delta y^2$, nous aboutissons sur l'expression suivante pour $2\frac{\partial^4 \psi}{\partial x^2\partial y^2}$ :
+# 
+# $$ \frac{2\psi_{i+1,j+1}^k -4\psi_{i+1,j}^k+2\psi_{i+1,j-1}^k-4\psi_{i,j+1}^k+8\psi_{i,j}^k-4\psi_{i,j-1}^k+2\psi_{i-1,j+1}^k-4\psi_{i-1,j}^k+2\psi_{i-1,j-1}^k}{\Delta x^4} $$
+# 
+# Finalement, nous avons: 
+# $$\nabla^4 \psi = \left(20\psi_{i,j}^k +2\psi_{i+1,j+1}^k +2\psi_{i+1,j-1}^k +2\psi_{i-1,j+1}^k +2\psi_{i-1,j-1}^k +\psi_{i+2,j}^k +\psi_{i-2,j}^k+ \psi_{i,j+2}^k +\psi_{i,j-2}^k -8\psi_{i+1,j}^k -8\psi_{i-1,j}^k -8\psi_{i,j+1}^k  -8\psi_{i,j-1}^k \right)\frac{1}{\Delta x^4} = 0$$
+
+# ### Implementation des conditions aux bord 
+# 
+# En utilisant les discretizations  $\textit{forward}$ et $\textit{backward}$, nous allons implémenter les différences finies de second ordre des conditions aux bords.
+# 
+
+# ### Résolution de l'équation biharmonique 
+# 
+# Pour ce faire, nous allons utiliser la méthode du gradient conjugué (5_04) . Il s'agit d'une ...
+# 
+# 
+# 
+# 
+# Quelle est la valeur de la fonction du courant aux points suivant: (0.6,0.2), (0.6,0.4), (0.6,0.6), (0.6,0.8)?
+# 
+# $\textbf{En (0.6,0.2)}$: 
+# 
+# $\textbf{En (0.6,0.4)}$: 
+# 
+# $\textbf{En (0.6,0.6)}$: 
+# 
+# $\textbf{En (0.6,0.8)}$: 
